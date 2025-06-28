@@ -20,10 +20,34 @@ class FaceDetector:
                 bboxC = detection.location_data.relative_bounding_box
                 ih, iw, ic = img.shape
                 bbox = int(bboxC.xmin * iw), int(bboxC.ymin * ih), int(bboxC.width * iw), int(bboxC.height * ih)
-                bboxes.append(bbox)
+                bboxes.append([id, bbox, detection.score])
                 if draw:
-                    cv.rectangle(img, bbox, (255, 0, 255), 2)
+                    self.fancyDraw(img, bbox)
+                    cv.putText(img, f"{int(detection.score[0] * 100)}%", (bbox[0], bbox[1] - 20), cv.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 3)
         return img, bboxes
+    
+    def fancyDraw(self, img, bbox, l=30, t=10, rt=1):
+        x, y, w, h = bbox
+        x1, y1 = x + w, y + h
+        cv.rectangle(img, bbox, (255, 0, 255), rt)
+
+        # Top left
+        cv.line(img, (x, y), (x + l, y), (255, 0, 255), t)
+        cv.line(img, (x, y), (x , y + l), (255, 0, 255), t)
+
+        # Top right
+        cv.line(img, (x1, y), (x1 - l, y), (255, 0, 255), t)
+        cv.line(img, (x1, y), (x1 , y + l), (255, 0, 255), t)
+
+        # Bottom left
+        cv.line(img, (x, y1), (x + l, y1), (255, 0, 255), t)
+        cv.line(img, (x, y1), (x , y1 - l), (255, 0, 255), t)
+
+        # Bottom right
+        cv.line(img, (x1, y1), (x1 - l, y1), (255, 0, 255), t)
+        cv.line(img, (x1, y1), (x1 , y1 - l), (255, 0, 255), t)
+
+        return img
 
 def main():
     pTime = 0
