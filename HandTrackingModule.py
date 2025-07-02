@@ -37,6 +37,13 @@ class handDetector():
                 if draw:
                     cv.circle(img, (cx, cy), 5, (255, 0, 255), cv.FILLED)
         return lmList
+    def leftORright(self, img):
+        if self.results.multi_handedness:
+            for hand in self.results.multi_handedness:
+                if hand.classification[0].label == 'Left':
+                    return True
+                elif hand.classification[0].label == 'Right':
+                    return False
 
 def main():
     pTime = 0
